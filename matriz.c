@@ -17,7 +17,6 @@ int kronecker(int x, int y){
     else return 0;
 }
 
-
 int main(int argc, char *argv[])
 {
     int u;
@@ -34,4 +33,28 @@ int main(int argc, char *argv[])
     #ifdef VERBOSE
         fprintf(stderr,"\n");
     #endif
+    
+    #ifdef VERBOSE
+    int ** adyacencias;
+    int renglon, columna;
+
+    adyacencias = (int **)calloc(2*red.nnodos,sizeof(int));
+    for (renglon=0; renglon<red.nnodos;renglon++)
+        adyacencias[renglon] = (int *)calloc(red.nnodos,sizeof(int));
+   
+    int sal,ent;
+    for(sal=0;sal<red.nnodos;sal++){
+        for(ent=0;ent<red.nodo[sal].grado;ent++){
+                adyacencias[sal][red.nodo[sal].arista[ent].entrada] = 1;
+        }
+    }
+    
+    for(renglon=0;renglon<red.nnodos;renglon++){
+        for(columna=0;columna<red.nnodos;columna++){
+            printf("%i    ", adyacencias[renglon][columna]);
+        }
+    printf("\n");
+    }
+ 
+   #endif
 }
