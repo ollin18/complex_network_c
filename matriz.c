@@ -28,12 +28,10 @@ int main(int argc, char *argv[])
     leer_red(&red,stdin);
     for (u=twom=0; u<red.nnodos; u++) twom += red.nodo[u].grado;
     #ifdef VERBOSE
-    fprintf(stderr,"Red con %i nodos y %i aristas\n",
+        fprintf(stderr,"Red con %i nodos y %i aristas\n",
 	  red.nnodos,twom/2);
     #endif
     #ifdef VERBOSE
         fprintf(stderr,"\n");
     #endif
-
-    
 }
