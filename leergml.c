@@ -57,7 +57,7 @@ int fill_buffer(FILE *stream)
     pasada->str = malloc(longitud*sizeof(char));
     strcpy(pasada->str,linea);
   }
-  pasada->ptr = NULL
+  pasada->ptr = NULL;
 
   return 0;
 }
