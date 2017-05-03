@@ -382,7 +382,7 @@ void read_aristas(RED *red)
 
 // Leer la red completa
 
-int read_red(RED *red, FILE *stream)
+int leer_red(RED *red, FILE *stream)
 {
   fill_buffer(stream);
   create_red(red);

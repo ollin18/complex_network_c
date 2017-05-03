@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     #ifdef VERBOSE
         fprintf(stderr,"Leyendo la red...\n");
     #endif
-    read_red(&red,stdin);
+    leer_red(&red,stdin);
     for (u=twom=0; u<red.nnodos; u++) twom += red.nodo[u].grado;
     p = (double)twom/(red.nnodos*red.nnodos);
     #ifdef VERBOSE
