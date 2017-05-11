@@ -35,12 +35,14 @@ int main(int argc, char *argv[])
     #endif
     
     #ifdef VERBOSE
-    int ** adyacencias;
+    int ** nbm;
     int renglon, columna;
 
-    adyacencias = (int **)calloc(2*red.nnodos,sizeof(int));
-    for (renglon=0; renglon<red.nnodos;renglon++)
-        adyacencias[renglon] = (int *)calloc(red.nnodos,sizeof(int));
+    nbm = (int **)calloc(4*twom,sizeof(int));
+    for (renglon=0; renglon<2*twom;renglon++)
+        adyacencias[renglon] = (int *)calloc(2*twom,sizeof(int));
+
+    int aris = 0;
    
     int sal,ent;
     for(sal=0;sal<red.nnodos;sal++){
@@ -49,7 +51,7 @@ int main(int argc, char *argv[])
         }
     }
     
-    for(renglon=0;renglon<red.nnodos;renglon++){
+    for(renglon=0;renglon<2*twom;renglon++){
         for(columna=0;columna<red.nnodos;columna++){
             printf("%i    ", adyacencias[renglon][columna]);
         }
