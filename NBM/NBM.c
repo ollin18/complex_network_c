@@ -49,7 +49,8 @@ int main(int argc, char *argv[])
             arista_2=0;
             for(k=0;k<red.nnodos;k++){
                 for(l=0;l<red.nodo[k].grado;l++){
-                        adyacencias[arista_1][arista_2] = kronecker(red.nodo[k].id,red.nodo[i].arista[j].entrada)*(1-kronecker(red.nodo[i].id,red.nodo[k].arista[l].entrada));
+                        adyacencias[arista_1][arista_2] = kronecker(red.nodo[k].id,red.nodo[i].arista[j].entrada) \
+                        *(1-kronecker(red.nodo[i].id,red.nodo[k].arista[l].entrada));
                     arista_2++;
                 }
             }
