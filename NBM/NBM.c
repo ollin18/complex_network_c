@@ -22,41 +22,49 @@ int main(int argc, char *argv[])
     int u;
 
     #ifdef VERBOSE
-        fprintf(stderr,"Leyendo la red...\n");
+    fprintf(stderr,"Leyendo la red...\n");
     #endif
     leer_red(&red,stdin);
     for (u=twom=0; u<red.nnodos; u++) twom += red.nodo[u].grado;
     #ifdef VERBOSE
-        fprintf(stderr,"Red con %i nodos y %i aristas\n",
-	  red.nnodos,twom/2);
+    fprintf(stderr,"Red con %i nodos y %i aristas\n",
+        red.nnodos,twom/2);
     #endif
     #ifdef VERBOSE
-        fprintf(stderr,"\n");
+    fprintf(stderr,"\n");
     #endif
-    
+
     #ifdef VERBOSE
-    int ** nbm;
+    int ** adyacencias;
     int renglon, columna;
 
-    nbm = (int **)calloc(4*twom,sizeof(int));
+    adyacencias = (int **)calloc(4*twom,sizeof(int));
     for (renglon=0; renglon<2*twom;renglon++)
         adyacencias[renglon] = (int *)calloc(2*twom,sizeof(int));
-
-    int aris = 0;
    
-    int sal,ent;
-    for(sal=0;sal<red.nnodos;sal++){
-        for(ent=0;ent<red.nodo[sal].grado;ent++){
-                adyacencias[sal][red.nodo[sal].arista[ent].entrada] = 1;
+    int i,j,k,l;
+    int arista_1,arista_2= 0;
+    for(i=0;i<red.nnodos;i++){
+        for(j=0;j<red.nodo[i].grado;j++){
+            arista_2=0;
+            for(k=0;k<red.nnodos;k++){
+                for(l=0;l<red.nodo[k].grado;l++){
+                        adyacencias[arista_1][arista_2] = kronecker(red.nodo[k].id,red.nodo[i].arista[j].entrada)*(1-kronecker(red.nodo[i].id,red.nodo[k].arista[l].entrada));
+                    arista_2++;
+                }
+            }
+            arista_1++;
         }
     }
-    
-    for(renglon=0;renglon<2*twom;renglon++){
-        for(columna=0;columna<red.nnodos;columna++){
+
+    for(renglon=0;renglon<twom;renglon++){
+        for(columna=0;columna<twom;columna++){
             printf("%i    ", adyacencias[renglon][columna]);
         }
     printf("\n");
     }
  
    #endif
-}
+
+
+}    
