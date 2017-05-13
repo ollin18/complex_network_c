@@ -7,15 +7,36 @@
 
 #include "leergml.h"
 
+
 RED red;
 int twom;                // Va a ser el doble del número de aristas
                          // lo queremos para muchas cosas.
 int **m;                 // El conteo de las aristas.
 
+int arista_1, arista_2;
+
 int kronecker(int x, int y){
     if(x==y) return 1;
     else return 0;
 }
+
+int generar(int i, int j, int k, int l, int ** matriz){
+    for(i=0;i<red.nnodos;i++){
+        for(j=0;j<red.nodo[i].grado;j++){
+            arista_2=0;
+            for(k=0;k<red.nnodos;k++){
+                for(l=0;l<red.nodo[k].grado;l++){
+                        matriz[arista_1][arista_2] = \
+                            kronecker(red.nodo[k].id,red.nodo[i].arista[j].entrada)* \
+                            (1-kronecker(red.nodo[i].id,red.nodo[k].arista[l].entrada));
+                    arista_2++;
+                }
+            }
+            arista_1++;
+        }
+    }
+}
+    
 
 int main(int argc, char *argv[])
 {
@@ -35,31 +56,22 @@ int main(int argc, char *argv[])
     #endif
 
     #ifdef VERBOSE
-    int ** adyacencias;
+    int ** nbm;
     int renglon, columna;
 
-    adyacencias = (int **)calloc(4*twom,sizeof(int));
-    for (renglon=0; renglon<2*twom;renglon++)
-        adyacencias[renglon] = (int *)calloc(2*twom,sizeof(int));
-   
-    int i,j,k,l;
-    int arista_1,arista_2= 0;
-    for(i=0;i<red.nnodos;i++){
-        for(j=0;j<red.nodo[i].grado;j++){
-            arista_2=0;
-            for(k=0;k<red.nnodos;k++){
-                for(l=0;l<red.nodo[k].grado;l++){
-                        adyacencias[arista_1][arista_2] = kronecker(red.nodo[k].id,red.nodo[i].arista[j].entrada)*(1-kronecker(red.nodo[i].id,red.nodo[k].arista[l].entrada));
-                    arista_2++;
-                }
-            }
-            arista_1++;
-        }
+    nbm = (int **)calloc(2*twom,sizeof(int));
+    for (renglon=0; renglon<2*twom;renglon++){
+        nbm[renglon] = (int *)calloc(2*twom,sizeof(int));
     }
+
+ 
+    int i,j,k,l;
+
+    generar(i,j,k,l,nbm);
 
     for(renglon=0;renglon<twom;renglon++){
         for(columna=0;columna<twom;columna++){
-            printf("%i    ", adyacencias[renglon][columna]);
+            printf("%i    ", nbm[renglon][columna]);
         }
     printf("\n");
     }
