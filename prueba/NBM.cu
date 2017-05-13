@@ -20,6 +20,7 @@ int kronecker(int x, int y){
     else return 0;
 }
 
+__global__
 int generar(int i, int j, int k, int l, int ** matriz){
     for(i=0;i<red.nnodos;i++){
         for(j=0;j<red.nodo[i].grado;j++){
@@ -67,7 +68,7 @@ int main(int argc, char *argv[])
  
     int i,j,k,l;
 
-    generar(i,j,k,l,nbm);
+    generar<<<4,8>>>(i,j,k,l,nbm);
 
     for(renglon=0;renglon<twom;renglon++){
         for(columna=0;columna<twom;columna++){
@@ -77,6 +78,4 @@ int main(int argc, char *argv[])
     }
  
    #endif
-
-
 }    
