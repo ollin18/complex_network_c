@@ -21,24 +21,6 @@ int kronecker(int x, int y){
     else return 0;
 }
 
-int generar(int i, int j, int k, int l, int ** matriz){
-    for(i=0;i<red.nnodos;i++){
-        for(j=0;j<red.nodo[i].grado;j++){
-            arista_2=0;
-            for(k=0;k<red.nnodos;k++){
-                for(l=0;l<red.nodo[k].grado;l++){
-                        matriz[arista_1][arista_2] = \
-                            kronecker(red.nodo[k].id,red.nodo[i].arista[j].entrada)* \
-                            (1-kronecker(red.nodo[i].id,red.nodo[k].arista[l].entrada));
-                    arista_2++;
-                }
-            }
-            arista_1++;
-        }
-    }
-}
-    
-
 int main(int argc, char *argv[])
 {
     int u,chunk,nthreads,tid;
