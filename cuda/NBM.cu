@@ -20,20 +20,24 @@ int kronecker(int x, int y){
     else return 0;
 }
 
-__global__
-int generar(int i, int j, int k, int l, int ** matriz){
+
+
+__global__ void generar(int i, int j, int k, int l, int ** matriz){
+    int d_arista_1 = threadIdx.x;
+    int d_arista_2 = threadIdx.y;
+    d_arista_1 = 0;
     for(i=0;i<red.nnodos;i++){
         for(j=0;j<red.nodo[i].grado;j++){
-            arista_2=0;
+            d_arista_2=0;
             for(k=0;k<red.nnodos;k++){
                 for(l=0;l<red.nodo[k].grado;l++){
-                        matriz[arista_1][arista_2] = \
+                        matriz[d_arista_1][d_arista_2] = \
                             kronecker(red.nodo[k].id,red.nodo[i].arista[j].entrada)* \
                             (1-kronecker(red.nodo[i].id,red.nodo[k].arista[l].entrada));
-                    arista_2++;
+                    d_arista_2++;
                 }
             }
-            arista_1++;
+            d_arista_1++;
         }
     }
 }
@@ -41,7 +45,7 @@ int generar(int i, int j, int k, int l, int ** matriz){
 
 int main(int argc, char *argv[])
 {
-    int u;
+    int u,i,j,k,l;
 
     #ifdef VERBOSE
     fprintf(stderr,"Leyendo la red...\n");
@@ -65,10 +69,25 @@ int main(int argc, char *argv[])
         nbm[renglon] = (int *)calloc(2*twom,sizeof(int));
     }
 
- 
-    int i,j,k,l;
+    int (*d_nbm)[2*twom];
 
-    generar<<<4,8>>>(i,j,k,l,nbm);
+    cudaMalloc((void**)&d_nbm, (4*twom*twom)*sizeof(int));
+
+    cudaMemcpy(d_nbm, nbm, (4*twom*twom)*sizeof(int), cudaMemcpyHostToDevice);
+
+    int *d_i,*d_j,*d_k,*d_l;
+
+    cudaMalloc((void**)&d_i,sizeof(int));
+    cudaMalloc((void**)&d_j,sizeof(int));
+    cudaMalloc((void**)&d_k,sizeof(int));
+    cudaMalloc((void**)&d_l,sizeof(int));
+
+    cudaMemcpy(d_i,i,sizeof(int),cudaMemcpyHostToDevice);
+    cudaMemcpy(d_j,j,sizeof(int),cudaMemcpyHostToDevice);
+    cudaMemcpy(d_k,k,sizeof(int),cudaMemcpyHostToDevice);
+    cudaMemcpy(d_l,l,sizeof(int),cudaMemcpyHostToDevice);
+
+    generar<<<2,4>>>(*d_i,*d_j,*d_k,*d_l,d_nbm);
 
     for(renglon=0;renglon<twom;renglon++){
         for(columna=0;columna<twom;columna++){
@@ -77,5 +96,13 @@ int main(int argc, char *argv[])
     printf("\n");
     }
  
-   #endif
+    #endif
+    cudaFree(d_nbm);
+    cudaFree(d_i);
+    cudaFree(d_j);
+    cudaFree(d_k);
+    cudaFree(d_l);
+
+    return 0;
+
 }    
