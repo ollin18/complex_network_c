@@ -1,7 +1,7 @@
 graph
 [
   Creator "Gephi"
-  directed 1
+  directed 0
   node
   [
     id 276

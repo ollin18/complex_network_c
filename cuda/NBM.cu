@@ -22,7 +22,7 @@ int kronecker(int x, int y){
 
 
 
-__global__ void generar(int i, int j, int k, int l, int ** matriz){
+__global__ void generar(int i, int j, int k, int l, int * matriz){
     int d_arista_1 = threadIdx.x;
     int d_arista_2 = threadIdx.y;
     d_arista_1 = 0;
@@ -82,12 +82,12 @@ int main(int argc, char *argv[])
     cudaMalloc((void**)&d_k,sizeof(int));
     cudaMalloc((void**)&d_l,sizeof(int));
 
-    cudaMemcpy(d_i,i,sizeof(int),cudaMemcpyHostToDevice);
-    cudaMemcpy(d_j,j,sizeof(int),cudaMemcpyHostToDevice);
-    cudaMemcpy(d_k,k,sizeof(int),cudaMemcpyHostToDevice);
-    cudaMemcpy(d_l,l,sizeof(int),cudaMemcpyHostToDevice);
+    cudaMemcpy(d_i,&i,sizeof(int),cudaMemcpyHostToDevice);
+    cudaMemcpy(d_j,&j,sizeof(int),cudaMemcpyHostToDevice);
+    cudaMemcpy(d_k,&k,sizeof(int),cudaMemcpyHostToDevice);
+    cudaMemcpy(d_l,&l,sizeof(int),cudaMemcpyHostToDevice);
 
-    generar<<<2,4>>>(*d_i,*d_j,*d_k,*d_l,d_nbm);
+    generar<<<2,4>>>(*d_i,*d_j,*d_k,*d_l,*d_nbm);
 
     for(renglon=0;renglon<twom;renglon++){
         for(columna=0;columna<twom;columna++){
