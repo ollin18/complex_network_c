@@ -6,7 +6,7 @@ NBM:NBM.o leergml.o
 	$(CC) $(CFLAGS) -o NBM NBM.o leergml.o $(LIBS)
 
 NBM.o:NBM.cu red.h leergml.h Makefile
-	$(CC) $(CFLAGS) -c NBM.cu
+	$(CC) $(CFLAGS) -c -Wno-deprecated-gpu-targets NBM.cu
 
 leergml.o:leergml.c leergml.h red.h
 	$(CC) $(CFLAGS) -c leergml.c
