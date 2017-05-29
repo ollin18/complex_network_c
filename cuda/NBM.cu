@@ -15,7 +15,7 @@ int **m;                 // El conteo de las aristas.
 
 int arista_1, arista_2;
 
-int kronecker(int x, int y){
+__host__ __device__ int kronecker(int x, int y){
     if(x==y) return 1;
     else return 0;
 }
@@ -31,7 +31,7 @@ __global__ void generar(int i, int j, int k, int l, int * matriz){
             d_arista_2=0;
             for(k=0;k<red.nnodos;k++){
                 for(l=0;l<red.nodo[k].grado;l++){
-                        matriz[d_arista_1][d_arista_2] = \
+                        matriz[d_arista_1+d_arista_2] = \
                             kronecker(red.nodo[k].id,red.nodo[i].arista[j].entrada)* \
                             (1-kronecker(red.nodo[i].id,red.nodo[k].arista[l].entrada));
                     d_arista_2++;
