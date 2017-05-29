@@ -1,14 +1,12 @@
-#define VERBOSE
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
 
-#include "leergml.h"
+#include "leergml.cuh"
 
 
-RED red;
+//RED red;
 int twom;                // Va a ser el doble del número de aristas
                          // lo queremos para muchas cosas.
 int **m;                 // El conteo de las aristas.
@@ -20,7 +18,16 @@ __host__ __device__ int kronecker(int x, int y){
     else return 0;
 }
 
+__device__ RED dev_red;
 
+void FillStructs(){
+    red h_red;
+
+    red *d_red;
+    cudaGetSymbolAddress( (void**)d_red, dev_red);
+
+    cudaMemcpy(d_red, &h_red, sizeof(red), cudaMemcpyHostToDevice);
+}
 
 __global__ void generar(int i, int j, int k, int l, int * matriz){
     int d_arista_1 = threadIdx.x;
@@ -47,20 +54,14 @@ int main(int argc, char *argv[])
 {
     int u,i,j,k,l;
 
-    #ifdef VERBOSE
     fprintf(stderr,"Leyendo la red...\n");
-    #endif
+
     leer_red(&red,stdin);
     for (u=twom=0; u<red.nnodos; u++) twom += red.nodo[u].grado;
-    #ifdef VERBOSE
     fprintf(stderr,"Red con %i nodos y %i aristas\n",
         red.nnodos,twom/2);
-    #endif
-    #ifdef VERBOSE
     fprintf(stderr,"\n");
-    #endif
 
-    #ifdef VERBOSE
     int ** nbm;
     int renglon, columna;
 
@@ -96,7 +97,6 @@ int main(int argc, char *argv[])
     printf("\n");
     }
  
-    #endif
     cudaFree(d_nbm);
     cudaFree(d_i);
     cudaFree(d_j);
