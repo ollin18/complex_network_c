@@ -60,7 +60,7 @@ __global__ void generar(int i, int j, int k, int l, int * matriz){
 }
     
 
-int main(int argc, char *argv[])
+int matriz(int argc, char *argv[])
 {
     int u,i,j,k,l;
 
@@ -71,6 +71,8 @@ int main(int argc, char *argv[])
     fprintf(stderr,"Red con %i nodos y %i aristas\n",
         h_red.nnodos,twom/2);
     fprintf(stderr,"\n");
+
+    FillStructs();
 
     int ** nbm;
     int renglon, columna;
@@ -100,6 +102,8 @@ int main(int argc, char *argv[])
 
     generar<<<128,128>>>(*d_i,*d_j,*d_k,*d_l,*d_nbm);
 
+    cudaMemcpy (nbm, d_nbm, (4*twom*twom)*sizeof(int), cudaMemcpyDeviceToHost);
+
     for(renglon=0;renglon<twom;renglon++){
         for(columna=0;columna<twom;columna++){
             printf("%i    ", nbm[renglon][columna]);
@@ -113,6 +117,6 @@ int main(int argc, char *argv[])
     cudaFree(d_k);
     cudaFree(d_l);
 
-    //return 0;
+    return 0;
 
 }    
