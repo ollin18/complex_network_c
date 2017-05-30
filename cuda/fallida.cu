@@ -1,43 +1,26 @@
+#define VERBOSE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include <cuda_runtime.h>
 
-//#include "leergml.h"
-extern "C"{
 #include "leergml.h"
-}
 
 
-extern "C"{
-int leer_red(RED *red, FILE *stream);
-}
-
-//RED red;
+RED red;
 int twom;                // Va a ser el doble del número de aristas
                          // lo queremos para muchas cosas.
 int **m;                 // El conteo de las aristas.
 
 int arista_1, arista_2;
 
-__host__ __device__ int kronecker(int x, int y){
+int kronecker(int x, int y){
     if(x==y) return 1;
     else return 0;
 }
 
-__device__ RED red;
-RED h_red;
 
-void FillStructs(){
-    RED h_red;
-
-    RED *d_red;
-
-    cudaGetSymbolAddress( (void**)&d_red, red);
-
-    cudaMemcpy(d_red, &h_red, sizeof(RED), cudaMemcpyHostToDevice);
-}
 
 __global__ void generar(int i, int j, int k, int l, int * matriz){
     int d_arista_1 = threadIdx.x;
@@ -48,7 +31,7 @@ __global__ void generar(int i, int j, int k, int l, int * matriz){
             d_arista_2=0;
             for(k=0;k<red.nnodos;k++){
                 for(l=0;l<red.nodo[k].grado;l++){
-                        matriz[d_arista_1+d_arista_2] = \
+                        matriz[d_arista_1][d_arista_2] = \
                             kronecker(red.nodo[k].id,red.nodo[i].arista[j].entrada)* \
                             (1-kronecker(red.nodo[i].id,red.nodo[k].arista[l].entrada));
                     d_arista_2++;
@@ -64,14 +47,20 @@ int main(int argc, char *argv[])
 {
     int u,i,j,k,l;
 
+    #ifdef VERBOSE
     fprintf(stderr,"Leyendo la red...\n");
-
+    #endif
     leer_red(&red,stdin);
-    for (u=twom=0; u<h_red.nnodos; u++) twom += h_red.nodo[u].grado;
+    for (u=twom=0; u<red.nnodos; u++) twom += red.nodo[u].grado;
+    #ifdef VERBOSE
     fprintf(stderr,"Red con %i nodos y %i aristas\n",
-        h_red.nnodos,twom/2);
+        red.nnodos,twom/2);
+    #endif
+    #ifdef VERBOSE
     fprintf(stderr,"\n");
+    #endif
 
+    #ifdef VERBOSE
     int ** nbm;
     int renglon, columna;
 
@@ -98,7 +87,7 @@ int main(int argc, char *argv[])
     cudaMemcpy(d_k,&k,sizeof(int),cudaMemcpyHostToDevice);
     cudaMemcpy(d_l,&l,sizeof(int),cudaMemcpyHostToDevice);
 
-    generar<<<128,128>>>(*d_i,*d_j,*d_k,*d_l,*d_nbm);
+    generar<<<2,4>>>(*d_i,*d_j,*d_k,*d_l,*d_nbm);
 
     for(renglon=0;renglon<twom;renglon++){
         for(columna=0;columna<twom;columna++){
@@ -107,12 +96,13 @@ int main(int argc, char *argv[])
     printf("\n");
     }
  
+    #endif
     cudaFree(d_nbm);
     cudaFree(d_i);
     cudaFree(d_j);
     cudaFree(d_k);
     cudaFree(d_l);
 
-    //return 0;
+    return 0;
 
 }    
